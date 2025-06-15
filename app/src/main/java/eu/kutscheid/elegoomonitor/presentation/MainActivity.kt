@@ -1,4 +1,4 @@
-package eu.kutscheid.elegoomonitor
+package eu.kutscheid.elegoomonitor.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,14 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import eu.kutscheid.elegoomonitor.presentation.Destination
-import eu.kutscheid.elegoomonitor.presentation.PrinterInfoViewModel
-import eu.kutscheid.elegoomonitor.presentation.PrinterListScreen
 import eu.kutscheid.elegoomonitor.ui.theme.ElegooMonitorTheme
+import org.koin.compose.viewmodel.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,13 +31,13 @@ class MainActivity : ComponentActivity() {
             ElegooMonitorTheme {
                 // Create a back stack, specifying the key the app should start with
                 val backStack = rememberNavBackStack<Destination>(Destination.InitialLoading)
-                val printerViewModel = viewModel<PrinterInfoViewModel>()
+                val printerViewModel = koinViewModel<PrinterInfoViewModel>()
                 val dataItem by printerViewModel.printerInfo.collectAsStateWithLifecycle()
 
                 LaunchedEffect(dataItem) {
                     if (dataItem.isNotEmpty()) {
                         backStack.clear()
-                        backStack.add(Destination.PrinterList(dataItem.map { it.data }))
+                        backStack.add(Destination.PrinterList(dataItem))
                     }
                 }
 
@@ -50,21 +47,21 @@ class MainActivity : ComponentActivity() {
                 ) { key ->
                     when (key) {
                         is Destination.InitialLoading -> NavEntry(key) {
-                            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                            Scaffold(modifier = Modifier.Companion.fillMaxSize()) { innerPadding ->
                                 Column(
                                     verticalArrangement = Arrangement.Center,
-                                    modifier = Modifier
+                                    modifier = Modifier.Companion
                                         .padding(innerPadding)
                                         .fillMaxSize()
                                         .padding(16.dp)
                                 ) {
                                     Text(
                                         "Waiting for data",
-                                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                                        modifier = Modifier.Companion.align(Alignment.Companion.CenterHorizontally)
                                     )
                                     CircularProgressIndicator(
-                                        modifier = Modifier.align(
-                                            Alignment.CenterHorizontally
+                                        modifier = Modifier.Companion.align(
+                                            Alignment.Companion.CenterHorizontally
                                         )
                                     )
                                 }
@@ -72,10 +69,10 @@ class MainActivity : ComponentActivity() {
                         }
 
                         is Destination.PrinterList -> NavEntry(key) {
-                            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                            Scaffold(modifier = Modifier.Companion.fillMaxSize()) { innerPadding ->
                                 PrinterListScreen(
                                     printers = key.printers,
-                                    modifier = Modifier.padding(innerPadding)
+                                    modifier = Modifier.Companion.padding(innerPadding)
                                 )
                             }
                         }

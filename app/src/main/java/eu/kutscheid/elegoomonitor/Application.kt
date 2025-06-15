@@ -3,10 +3,16 @@ package eu.kutscheid.elegoomonitor
 import android.app.Application
 import co.touchlab.kermit.LogcatWriter
 import co.touchlab.kermit.Logger
+import eu.kutscheid.elegoomonitor.di.appModule
+import org.koin.core.context.startKoin
 
 class Application: Application() {
     override fun onCreate() {
         super.onCreate()
+
+        startKoin {
+            modules(appModule())
+        }
 
         // Initialize Kermit with a LogcatWriter for Android
         // This will output logs to Logcat.

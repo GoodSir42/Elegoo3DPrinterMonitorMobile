@@ -6,7 +6,6 @@ import io.ktor.network.selector.ActorSelectorManager
 import io.ktor.network.sockets.Datagram
 import io.ktor.network.sockets.InetSocketAddress
 import io.ktor.network.sockets.aSocket
-import io.ktor.utils.io.core.ByteReadPacket
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.onFailure
@@ -15,11 +14,16 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.isActive
 import kotlinx.coroutines.isActive
-import kotlinx.io.readByteArray
+import kotlinx.io.Buffer
+import kotlinx.io.readString
+import kotlinx.io.writeString
 import kotlinx.serialization.json.Json
 import kotlin.time.Duration.Companion.seconds
+
+private const val BROADCAST_MESSAGE = "M99999"
+
+private const val PORT = 3000
 
 class UdpDataSource {
 
@@ -29,25 +33,37 @@ class UdpDataSource {
     fun startBroadcast(): Flow<PrinterItem> = flow {
         val selectorManager = ActorSelectorManager(Dispatchers.IO)
         selectorManager.use {
-            val socket = aSocket(selectorManager).udp().bind(InetSocketAddress("0.0.0.0", 3000)) {
+            val socket = aSocket(selectorManager).udp().bind(InetSocketAddress("0.0.0.0", PORT)) {
                 broadcast = true
             }
             socket.use {
                 while (currentCoroutineContext().isActive) {
-                    it.send(Datagram(ByteReadPacket("M99999".toByteArray(Charsets.UTF_8)), InetSocketAddress("255.255.255.255", 3000)))
                     logger.d { "sending discovery datagram" }
+                    it.send(
+                        Datagram(
+                            Buffer().apply {
+                                writeString(BROADCAST_MESSAGE, Charsets.UTF_8)
+                            },
+                            InetSocketAddress(
+                                "255.255.255.255",
+                                PORT
+                            )
+                        )
+                    )
                     logger.d { "checking for response" }
                     if (!it.incoming.isEmpty) {
                         it.incoming.receiveCatching()
                             .onSuccess { data ->
-                                val messageString =
-                                    data.packet.readByteArray().toString(Charsets.UTF_8)
+                                val messageString = data.packet.readString()
                                 logger.d {
-                                    "Got message $messageString" }
-                                try {
-                                    emit(Json.decodeFromString(messageString))
-                                } catch (ex: Throwable) {
-                                    logger.d(ex) { "can't parse message \"$messageString\", ignoring" }
+                                    "Got message $messageString"
+                                }
+                                if (messageString != BROADCAST_MESSAGE) {
+                                    try {
+                                        emit(Json.decodeFromString(messageString))
+                                    } catch (ex: Throwable) {
+                                        logger.d(ex) { "can't parse message \"$messageString\", ignoring" }
+                                    }
                                 }
                             }
                             .onFailure { error ->
@@ -56,20 +72,6 @@ class UdpDataSource {
                     }
                     delay(1.seconds)
                 }
-            }
-        }
-    }
-
-    suspend fun receiveData(): ByteArray {
-        val selectorManager = ActorSelectorManager(Dispatchers.IO)
-        return selectorManager.use {
-            // Use aDatagramSocket for UDP
-            val socket = aSocket(selectorManager).udp().connect(InetSocketAddress("0.0.0.0", 3000))
-            socket.use {
-                // Receive a datagram
-                val datagram = it.receive()
-                // Read the packet content as ByteArray
-                datagram.packet.readByteArray()
             }
         }
     }

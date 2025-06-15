@@ -1,7 +1,7 @@
 package eu.kutscheid.elegoomonitor.presentation
 
 import androidx.navigation3.runtime.NavKey
-import eu.kutscheid.elegoomonitor.data.model.PrinterData
+import eu.kutscheid.elegoomonitor.domain.model.PrinterEntity
 import kotlinx.serialization.Serializable
 
 
@@ -10,5 +10,5 @@ sealed class Destination : NavKey {
     data object InitialLoading : Destination()
 
     @Serializable
-    data class PrinterList(val printers: List<PrinterData>) : Destination()
+    data class PrinterList(val printers: List<PrinterEntity>) : Destination()
 }
