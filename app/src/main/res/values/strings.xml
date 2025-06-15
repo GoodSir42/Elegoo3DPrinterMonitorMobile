@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Elegoo Monitor</string>
+    <string name="printer_progress_percent">Progress: %1$.2f%%</string>
+    <string name="printer_resolution">Resolution: %1$s</string>
+    <string name="printer_firmware_version">Firmware Version: %1$s</string>
+    <string name="printer_status_ready">Ready</string>
+    <string name="printer_status_preparing">Preparing</string>
+    <string name="printer_status_retracting">Retracting</string>
+    <string name="printer_status_exposing">Exposing</string>
+    <string name="printer_status_lifting">Lifting</string>
+    <string name="printer_status_pausing">Pausing</string>
+    <string name="printer_status_paused">Paused</string>
+    <string name="printer_status_cancelling">Cancelling</string>
+    <string name="printer_status_finalizing">Finalizing</string>
+    <string name="printer_status_cancelled">Cancelled</string>
+    <string name="printer_status_complete">Complete</string>
+    <string name="printer_status_unknown">Unknown</string>
+    <string name="content_description_printer_image">Image of a %1$s 3d printer</string>
 </resources>

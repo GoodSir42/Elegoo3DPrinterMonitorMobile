@@ -10,6 +10,11 @@ data class FullPrinterEntity(
     val name: String,
     val type: PrinterType,
     val status: PrinterStatus,
+    val resolution: String,
+    val firmwareVersion: String,
+    val totalLayers: Long,
+    val currentLayer: Long,
+    val progress: Double = currentLayer.toDouble() / totalLayers.toDouble(),
 ) {
     constructor(dataModel: PrinterItem) : this(
         lastSeen = Instant.now(),
@@ -26,13 +31,17 @@ data class FullPrinterEntity(
             2 -> PrinterStatus.Retracting
             3 -> PrinterStatus.Exposing
             4 -> PrinterStatus.Lifting
-            5 -> PrinterStatus.Pausing
+            5, 6 -> PrinterStatus.Pausing
             7 -> PrinterStatus.Paused
             9 -> PrinterStatus.Cancelling
             12 -> PrinterStatus.Finalizing
             13 -> PrinterStatus.Cancelled
             16 -> PrinterStatus.Complete
             else -> PrinterStatus.Unknown
-        }
+        },
+        resolution = dataModel.data.attributes.resolution,
+        firmwareVersion = dataModel.data.attributes.firmwareVersion,
+        currentLayer = dataModel.data.status.printInfo.currentLayer,
+        totalLayers = dataModel.data.status.printInfo.totalLayer,
     )
 }

@@ -34,9 +34,9 @@ data class PrintInfo(
     @SerialName("Status")
     val status: Int,
     @SerialName("CurrentLayer")
-    val currentLayer: Int,
+    val currentLayer: Long,
     @SerialName("TotalLayer")
-    val totalLayer: Int,
+    val totalLayer: Long,
     @SerialName("CurrentTicks")
     val currentTicks: Long,
     @SerialName("TotalTicks")
