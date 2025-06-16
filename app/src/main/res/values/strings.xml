@@ -16,4 +16,5 @@
     <string name="printer_status_complete">Complete</string>
     <string name="printer_status_unknown">Unknown</string>
     <string name="content_description_printer_image">Image of a %1$s 3d printer</string>
+    <string name="main_scanning_and_waiting">Scanning network and waiting for data</string>
 </resources>

@@ -8,21 +8,28 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import eu.kutscheid.elegoomonitor.R
 import eu.kutscheid.elegoomonitor.ui.theme.ElegooMonitorTheme
 import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,32 +54,36 @@ class MainActivity : ComponentActivity() {
                 ) { key ->
                     when (key) {
                         is Destination.InitialLoading -> NavEntry(key) {
-                            Scaffold(modifier = Modifier.Companion.fillMaxSize()) { innerPadding ->
+                            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                                 Column(
                                     verticalArrangement = Arrangement.Center,
-                                    modifier = Modifier.Companion
+                                    modifier = Modifier
                                         .padding(innerPadding)
                                         .fillMaxSize()
                                         .padding(16.dp)
                                 ) {
                                     Text(
-                                        "Waiting for data",
-                                        modifier = Modifier.Companion.align(Alignment.Companion.CenterHorizontally)
+                                        stringResource(R.string.main_scanning_and_waiting),
+                                        style = MaterialTheme.typography.headlineLarge,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.align(Alignment.CenterHorizontally)
                                     )
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.Companion.align(
-                                            Alignment.Companion.CenterHorizontally
-                                        )
+                                    LoadingIndicator(
+                                        modifier = Modifier
+                                            .size(120.dp)
+                                            .align(
+                                                Alignment.CenterHorizontally
+                                            )
                                     )
                                 }
                             }
                         }
 
                         is Destination.PrinterList -> NavEntry(key) {
-                            Scaffold(modifier = Modifier.Companion.fillMaxSize()) { innerPadding ->
+                            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                                 PrinterListScreen(
                                     printers = key.printers,
-                                    modifier = Modifier.Companion.padding(innerPadding)
+                                    modifier = Modifier.padding(innerPadding)
                                 )
                             }
                         }

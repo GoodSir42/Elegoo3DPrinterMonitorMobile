@@ -16,6 +16,8 @@ nav3Core = "1.0.0-alpha03"
 lifecycleViewmodelNav3 = "1.0.0-alpha01"
 kotlinxSerializationCore = "1.8.1"
 koin-bom = "4.1.0"
+playUpload = "3.12.1"
+kover = "0.9.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -55,4 +57,5 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-
+playUpload = { id = "com.github.triplet.play", version.ref = "playUpload" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }

@@ -1,8 +1,12 @@
+import com.github.triplet.gradle.androidpublisher.ReleaseStatus
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.playUpload)
+    alias(libs.plugins.kover)
 }
 
 android {
@@ -19,9 +23,23 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = "release-key"
+            keyPassword = System.getenv("KEY_STORE_KEY_PASSWORD")
+            storeFile = file("elegoo-app-keystore")
+            storePassword = System.getenv("KEY_STORE_PASSWORD")
+        }
+    }
+
     buildTypes {
+        debug {
+            applicationIdSuffix = ".debug"
+        }
+
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -37,6 +55,14 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+
+    play {
+        enabled = System.getenv("CI") == "true"
+        resolutionStrategy = com.github.triplet.gradle.androidpublisher.ResolutionStrategy.AUTO
+        defaultToAppBundles = true
+        track = "internal"
+        releaseStatus = ReleaseStatus.COMPLETED
     }
 }
 
