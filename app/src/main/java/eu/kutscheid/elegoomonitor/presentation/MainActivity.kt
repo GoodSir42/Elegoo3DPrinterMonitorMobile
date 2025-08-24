@@ -83,6 +83,18 @@ class MainActivity : ComponentActivity() {
                             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                                 PrinterListScreen(
                                     printers = key.printers,
+                                    onPrinterSelected = { printerId ->
+                                        backStack.add(Destination.PrinterDetail(printerId))
+                                    },
+                                    modifier = Modifier.padding(innerPadding)
+                                )
+                            }
+                        }
+
+                        is Destination.PrinterDetail -> NavEntry(key) {
+                            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                                PrinterDetailScreen(
+                                    printerId = key.printerId,
                                     modifier = Modifier.padding(innerPadding)
                                 )
                             }

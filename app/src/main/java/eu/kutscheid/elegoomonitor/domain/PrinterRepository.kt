@@ -4,11 +4,15 @@ import eu.kutscheid.elegoomonitor.data.UdpDataSource
 import eu.kutscheid.elegoomonitor.data.model.PrinterItem
 import eu.kutscheid.elegoomonitor.domain.model.FullPrinterEntity
 import eu.kutscheid.elegoomonitor.domain.model.PrinterEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.runningFold
+import kotlinx.coroutines.flow.shareIn
 
 class DataRepository(dataSource: UdpDataSource) {
     private val printers = dataSource
@@ -26,7 +30,10 @@ class DataRepository(dataSource: UdpDataSource) {
         }
         .map {
             it.map { FullPrinterEntity(it) }
-        }
+        }.shareIn(
+            CoroutineScope(Dispatchers.IO), started = SharingStarted
+                .Lazily
+        )
 
     fun getPrinterList(): Flow<List<PrinterEntity>> {
         return printers.map { fullPrinters -> fullPrinters.map { PrinterEntity(it) } }

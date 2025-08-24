@@ -1,6 +1,7 @@
 package eu.kutscheid.elegoomonitor.presentation
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -30,14 +31,20 @@ import eu.kutscheid.elegoomonitor.domain.model.PrinterType
 import eu.kutscheid.elegoomonitor.ui.theme.ElegooMonitorTheme
 
 @Composable
-fun PrinterListScreen(printers: List<PrinterEntity>, modifier: Modifier = Modifier) {
+fun PrinterListScreen(
+    printers: List<PrinterEntity>,
+    onPrinterSelected: (printerId: String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(printers) { printer ->
-            Card {
+            Card(modifier = Modifier.clickable(onClick = {
+                onPrinterSelected(printer.id)
+            })) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -117,7 +124,7 @@ fun PrinterListScreen(printers: List<PrinterEntity>, modifier: Modifier = Modifi
     }
 }
 
-private fun colorForStatus(status: PrinterStatus): Color {
+internal fun colorForStatus(status: PrinterStatus): Color {
     return when (status) {
         PrinterStatus.Ready, PrinterStatus.Paused -> Color(0xFF999999)
         PrinterStatus.Pausing, PrinterStatus.Cancelling -> Color(0xFFc2b85c)
@@ -128,7 +135,7 @@ private fun colorForStatus(status: PrinterStatus): Color {
     }
 }
 
-private fun foregroundColorForStatus(status: PrinterStatus): Color {
+internal fun foregroundColorForStatus(status: PrinterStatus): Color {
     return when (status) {
         PrinterStatus.Pausing, PrinterStatus.Cancelling -> Color.Black
         else -> Color.White
@@ -140,6 +147,7 @@ private fun foregroundColorForStatus(status: PrinterStatus): Color {
 private fun PrinterListScreenPreview() {
     ElegooMonitorTheme {
         PrinterListScreen(
+            onPrinterSelected = {},
             printers = listOf(
                 PrinterEntity(
                     id = "123",

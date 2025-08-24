@@ -11,4 +11,8 @@ sealed class Destination : NavKey {
 
     @Serializable
     data class PrinterList(val printers: List<PrinterEntity>) : Destination()
+
+
+    @Serializable
+    data class PrinterDetail(val printerId: String) : Destination()
 }
