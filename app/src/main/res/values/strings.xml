@@ -17,4 +17,8 @@
     <string name="printer_status_unknown">Unknown</string>
     <string name="content_description_printer_image">Image of a %1$s 3d printer</string>
     <string name="main_scanning_and_waiting">Scanning network and waiting for data</string>
+    <string name="back">Back</string>
+    <string name="estimated_leftover_time">Estimated Leftover Time: %1$s</string>
+    <string name="elapsed_time">Elapsed Time: %1$s</string>
+    <string name="current_layer">Current Layer: %1$d / %2$d</string>
 </resources>

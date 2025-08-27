@@ -29,10 +29,10 @@ class DataRepository(dataSource: UdpDataSource) {
             }
         }
         .map {
-            it.map { FullPrinterEntity(it) }
+            it.map(::FullPrinterEntity)
         }.shareIn(
-            CoroutineScope(Dispatchers.IO), started = SharingStarted
-                .Lazily
+            CoroutineScope(Dispatchers.IO),
+            started = SharingStarted.WhileSubscribed()
         )
 
     fun getPrinterList(): Flow<List<PrinterEntity>> {
