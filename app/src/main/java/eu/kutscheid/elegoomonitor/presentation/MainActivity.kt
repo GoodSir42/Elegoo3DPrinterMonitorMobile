@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ElegooMonitorTheme {
                 // Create a back stack, specifying the key the app should start with
-                val backStack = rememberNavBackStack<Destination>(Destination.InitialLoading)
+                val backStack = rememberNavBackStack(Destination.InitialLoading)
                 val printerViewModel = koinViewModel<PrinterInfoViewModel>()
                 val dataItem by printerViewModel.printerInfo.collectAsStateWithLifecycle()
 
@@ -115,7 +115,6 @@ class MainActivity : ComponentActivity() {
                                     }
                                 val printer by viewModel.printer.collectAsStateWithLifecycle()
                                 printer?.let {
-                                    it
                                     PrinterDetailScreen(
                                         printer = it,
                                         modifier = Modifier.padding(innerPadding)
