@@ -15,4 +15,7 @@ sealed class Destination : NavKey {
 
     @Serializable
     data class PrinterDetail(val printerId: String) : Destination()
+
+    @Serializable
+    data object LicenseOverview : Destination()
 }

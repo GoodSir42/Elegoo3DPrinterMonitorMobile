@@ -3,11 +3,11 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.playUpload)
     alias(libs.plugins.kover)
+    alias(libs.plugins.aboutlibraries)
 }
 
 android {
@@ -54,14 +54,14 @@ android {
     buildFeatures {
         compose = true
     }
+}
 
-    play {
-        enabled = System.getenv("CI") == "true"
-        resolutionStrategy = com.github.triplet.gradle.androidpublisher.ResolutionStrategy.AUTO
-        defaultToAppBundles = true
-        track = "internal"
-        releaseStatus = ReleaseStatus.COMPLETED
-    }
+play {
+    enabled = System.getenv("CI") == "true"
+    resolutionStrategy = com.github.triplet.gradle.androidpublisher.ResolutionStrategy.AUTO
+    defaultToAppBundles = true
+    track = "internal"
+    releaseStatus = ReleaseStatus.COMPLETED
 }
 
 kotlin {
@@ -80,7 +80,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.materialIconsCore)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.kotlinx.serialization.json)
@@ -96,6 +95,8 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
     implementation(libs.koin.composeViewmodel)
+    implementation(libs.aboutlibraries.compose.m3)
+    implementation(libs.aboutlibraries.core)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

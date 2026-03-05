@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -24,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -87,7 +86,22 @@ class MainActivity : ComponentActivity() {
                         }
 
                         is Destination.PrinterList -> NavEntry(key) {
-                            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                            Scaffold(
+                                modifier = Modifier.fillMaxSize(),
+                                topBar = {
+                                    TopAppBar(
+                                        title = { Text(stringResource(R.string.app_name)) },
+                                        actions = {
+                                            IconButton(onClick = { backStack.add(Destination.LicenseOverview) }) {
+                                                Icon(
+                                                    painterResource(R.drawable.ic_info),
+                                                    contentDescription = stringResource(R.string.licenses)
+                                                )
+                                            }
+                                        }
+                                    )
+                                }
+                            ) { innerPadding ->
                                 PrinterListScreen(
                                     printers = key.printers,
                                     onPrinterSelected = { printerId ->
@@ -103,7 +117,7 @@ class MainActivity : ComponentActivity() {
                                 TopAppBar(title = {}, navigationIcon = {
                                     IconButton(onClick = { backStack.removeLastOrNull() }) {
                                         Icon(
-                                            Icons.AutoMirrored.Filled.ArrowBack,
+                                            painterResource(R.drawable.ic_arrow_back),
                                             contentDescription = stringResource(R.string.back)
                                         )
                                     }
@@ -120,6 +134,27 @@ class MainActivity : ComponentActivity() {
                                         modifier = Modifier.padding(innerPadding)
                                     )
                                 }
+                            }
+                        }
+
+                        is Destination.LicenseOverview -> NavEntry(key) {
+                            Scaffold(
+                                modifier = Modifier.fillMaxSize(),
+                                topBar = {
+                                    TopAppBar(
+                                        title = { Text(stringResource(R.string.licenses)) },
+                                        navigationIcon = {
+                                            IconButton(onClick = { backStack.removeLastOrNull() }) {
+                                                Icon(
+                                                    painterResource(R.drawable.ic_arrow_back),
+                                                    contentDescription = stringResource(R.string.back)
+                                                )
+                                            }
+                                        }
+                                    )
+                                }
+                            ) { innerPadding ->
+                                LicenseOverviewScreen(modifier = Modifier.padding(innerPadding))
                             }
                         }
 
