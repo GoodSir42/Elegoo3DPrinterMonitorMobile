@@ -63,7 +63,7 @@ fun PrinterListScreen(
                             Text(
                                 when (printer.status) {
                                     PrinterStatus.Ready -> stringResource(R.string.printer_status_ready)
-                                    PrinterStatus.Preparing -> stringResource(R.string.printer_status_preparing)
+                                    PrinterStatus.Printing -> stringResource(R.string.printer_status_printing)
                                     PrinterStatus.Retracting -> stringResource(R.string.printer_status_retracting)
                                     PrinterStatus.Exposing -> stringResource(R.string.printer_status_exposing)
                                     PrinterStatus.Lifting -> stringResource(R.string.printer_status_lifting)
@@ -107,6 +107,7 @@ fun PrinterListScreen(
                                 when (printer.type) {
                                     PrinterType.MARS_4 -> R.drawable.printer_mars4ultra
                                     PrinterType.SATURN_3 -> R.drawable.printer_saturn3ultra
+                                    PrinterType.CENTAURI_CARBON -> R.drawable.printer_default
                                     PrinterType.UNKNOWN -> R.drawable.printer_default
                                 }
                             ),
@@ -171,7 +172,7 @@ private fun PrinterListScreenPreview() {
                     id = "1234",
                     name = "Test Printer with a very long name because it has to be tested",
                     type = PrinterType.UNKNOWN,
-                    status = PrinterStatus.Preparing,
+                    status = PrinterStatus.Printing,
                     resolution = "12x13",
                     firmwareVersion = "v1.2.3",
                     progress = 0.123456,

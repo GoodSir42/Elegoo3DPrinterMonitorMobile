@@ -1,11 +1,14 @@
 package eu.kutscheid.elegoomonitor.presentation
 
+import android.graphics.Color
+import android.webkit.WebView
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import eu.kutscheid.elegoomonitor.R
 import eu.kutscheid.elegoomonitor.domain.model.FullPrinterEntity
 import eu.kutscheid.elegoomonitor.domain.model.PrinterStatus
@@ -46,7 +51,11 @@ private val timeFormatter = DateTimeComponents.Format {
 
 @OptIn(ExperimentalTime::class)
 @Composable
-fun PrinterDetailScreen(printer: FullPrinterEntity, modifier: Modifier = Modifier) {
+fun PrinterDetailScreen(
+    printer: FullPrinterEntity,
+    modifier: Modifier = Modifier,
+    videoStreamUrl: String? = null,
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier
@@ -54,12 +63,14 @@ fun PrinterDetailScreen(printer: FullPrinterEntity, modifier: Modifier = Modifie
             .fillMaxSize()
     ) { // Added modifier to the Column
         Text(text = printer.name, style = MaterialTheme.typography.headlineLarge)
+        videoStreamUrl?.let { MjpegStream(url = it) }
         Row {
             Image(
                 painterResource(
                     when (printer.type) {
                         PrinterType.MARS_4 -> R.drawable.printer_mars4ultra
                         PrinterType.SATURN_3 -> R.drawable.printer_saturn3ultra
+                        PrinterType.CENTAURI_CARBON -> R.drawable.printer_default
                         PrinterType.UNKNOWN -> R.drawable.printer_default
                     }
                 ),
@@ -83,7 +94,7 @@ fun PrinterDetailScreen(printer: FullPrinterEntity, modifier: Modifier = Modifie
                     Text(
                         when (printer.status) {
                             PrinterStatus.Ready -> stringResource(R.string.printer_status_ready)
-                            PrinterStatus.Preparing -> stringResource(R.string.printer_status_preparing)
+                            PrinterStatus.Printing -> stringResource(R.string.printer_status_printing)
                             PrinterStatus.Retracting -> stringResource(R.string.printer_status_retracting)
                             PrinterStatus.Exposing -> stringResource(R.string.printer_status_exposing)
                             PrinterStatus.Lifting -> stringResource(R.string.printer_status_lifting)
@@ -152,6 +163,31 @@ fun PrinterDetailScreen(printer: FullPrinterEntity, modifier: Modifier = Modifie
     }
 }
 
+/**
+ * Renders a Motion-JPEG stream. Media3/ExoPlayer can't decode MJPEG, so the frames are shown via a
+ * WebView `<img>` which the browser engine refreshes in place. Reloaded only when [url] changes so
+ * frequent status recompositions don't restart the stream.
+ */
+@Composable
+private fun MjpegStream(url: String, modifier: Modifier = Modifier) {
+    key(url) {
+        AndroidView(
+            factory = { context ->
+                WebView(context).apply {
+                    setBackgroundColor(Color.BLACK)
+                    settings.useWideViewPort = true
+                    settings.loadWithOverviewMode = true
+                    loadUrl(url)
+                }
+            },
+            onRelease = { it.destroy() },
+            modifier = modifier
+                .fillMaxWidth()
+                .aspectRatio(4f / 3f),
+        )
+    }
+}
+
 @OptIn(ExperimentalTime::class)
 @Preview(showBackground = true)
 @Composable
@@ -161,6 +197,8 @@ fun PrinterDetailScreenPreview() {
             name = "Mars 4 Ultra",
             type = PrinterType.MARS_4,
             status = PrinterStatus.Ready,
+            mainboardID = "MB1",
+            ipAddress = "192.168.1.42",
             lastSeen = Clock.System.now(),
             id = "",
             resolution = "123x123",

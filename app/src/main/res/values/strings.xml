@@ -4,7 +4,7 @@
     <string name="printer_resolution">Resolution: %1$s</string>
     <string name="printer_firmware_version">Firmware Version: %1$s</string>
     <string name="printer_status_ready">Ready</string>
-    <string name="printer_status_preparing">Preparing</string>
+    <string name="printer_status_printing">Printing</string>
     <string name="printer_status_retracting">Retracting</string>
     <string name="printer_status_exposing">Exposing</string>
     <string name="printer_status_lifting">Lifting</string>

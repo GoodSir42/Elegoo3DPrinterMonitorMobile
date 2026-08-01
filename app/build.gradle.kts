@@ -12,7 +12,7 @@ plugins {
 
 android {
     namespace = "eu.kutscheid.elegoomonitor"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "eu.kutscheid.elegoomonitor"
@@ -40,6 +40,7 @@ android {
 
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -82,6 +83,9 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.websockets)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kermit)
     implementation(libs.androidx.navigation3.ui)

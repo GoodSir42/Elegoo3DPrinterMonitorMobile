@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 enum class PrinterType(val displayName: String) {
     MARS_4("ELEGOO Mars 4 Ultra"),
     SATURN_3("ELEGOO Saturn 3 Ultra"),
+    CENTAURI_CARBON("ELEGOO Centauri Carbon"),
     UNKNOWN("Unknown")
 }

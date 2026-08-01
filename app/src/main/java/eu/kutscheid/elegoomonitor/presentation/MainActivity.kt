@@ -45,12 +45,12 @@ class MainActivity : ComponentActivity() {
                 // Create a back stack, specifying the key the app should start with
                 val backStack = rememberNavBackStack(Destination.InitialLoading)
                 val printerViewModel = koinViewModel<PrinterInfoViewModel>()
-                val dataItem by printerViewModel.printerInfo.collectAsStateWithLifecycle()
+                val printerList by printerViewModel.printerInfo.collectAsStateWithLifecycle()
 
-                LaunchedEffect(dataItem) {
-                    if (dataItem.isNotEmpty() && backStack.last() == Destination.InitialLoading) {
+                LaunchedEffect(printerList) {
+                    if (printerList.isNotEmpty() && backStack.last() == Destination.InitialLoading) {
                         backStack.clear()
-                        backStack.add(Destination.PrinterList(dataItem))
+                        backStack.add(Destination.PrinterList)
                     }
                 }
 
@@ -103,7 +103,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             ) { innerPadding ->
                                 PrinterListScreen(
-                                    printers = key.printers,
+                                    printers = printerList,
                                     onPrinterSelected = { printerId ->
                                         backStack.add(Destination.PrinterDetail(printerId))
                                     },
@@ -128,9 +128,11 @@ class MainActivity : ComponentActivity() {
                                         it.printerId = key.printerId
                                     }
                                 val printer by viewModel.printer.collectAsStateWithLifecycle()
+                                val videoStreamUrl by viewModel.videoStreamUrl.collectAsStateWithLifecycle()
                                 printer?.let {
                                     PrinterDetailScreen(
                                         printer = it,
+                                        videoStreamUrl = videoStreamUrl,
                                         modifier = Modifier.padding(innerPadding)
                                     )
                                 }
