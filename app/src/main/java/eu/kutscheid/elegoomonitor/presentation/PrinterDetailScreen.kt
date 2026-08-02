@@ -145,22 +145,28 @@ fun PrinterDetailScreen(
             style = MaterialTheme.typography.bodyLarge
         )
         Text(
-            text = stringResource(R.string.elapsed_time, printer.elapsedTime),
+            text = stringResource(
+                R.string.elapsed_time,
+                printer.elapsedTime.toComponents { hours, minutes, seconds, _ -> "${hours}h ${minutes}m ${seconds}s" }),
             style = MaterialTheme.typography.bodyLarge
         )
         Text(
-            text = stringResource(R.string.estimated_leftover_time, printer.estimatedTime),
+            text = stringResource(
+                R.string.estimated_leftover_time,
+                printer.estimatedTime.toComponents { hours, minutes, seconds, _ -> "${hours}h ${minutes}m ${seconds}s" }),
             style = MaterialTheme.typography.bodyLarge
         )
         Text(
-            text = "ETA: ${
+            text = remember(printer.estimatedTime) {
+                "ETA: ${
                 Clock.System.now().plus(printer.estimatedTime).format(
                     timeFormatter,
-                    offset = remember {
+                    offset = 
                         TimeZone.currentSystemDefault().offsetAt(Clock.System.now())
-                    },
+
                 )
-            }",
+                }"
+            },
             style = MaterialTheme.typography.headlineSmall
         )
     }
