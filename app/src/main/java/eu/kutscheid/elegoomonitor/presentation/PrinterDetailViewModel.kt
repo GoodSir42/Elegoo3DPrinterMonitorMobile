@@ -8,8 +8,11 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class PrinterDetailViewModel(private val repository: DataRepository) : ViewModel() {
-    lateinit var printerId: String
+class PrinterDetailViewModel(
+    private val repository: DataRepository,
+    private val printerId: String
+) : ViewModel() {
+
 
     val printer by lazy {
         repository.getPrinterDetail(printerId)

@@ -33,6 +33,7 @@ import androidx.navigation3.ui.NavDisplay
 import eu.kutscheid.elegoomonitor.R
 import eu.kutscheid.elegoomonitor.ui.theme.ElegooMonitorTheme
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 class MainActivity : ComponentActivity() {
@@ -124,9 +125,11 @@ class MainActivity : ComponentActivity() {
                                 })
                             }) { innerPadding ->
                                 val viewModel =
-                                    koinViewModel<PrinterDetailViewModel>(key = "detail_${key.printerId}").also {
-                                        it.printerId = key.printerId
-                                    }
+                                    koinViewModel<PrinterDetailViewModel>(
+                                        key = "detail_${key.printerId}",
+                                        parameters = {
+                                            parametersOf(key.printerId)
+                                        })
                                 val printer by viewModel.printer.collectAsStateWithLifecycle()
                                 val videoStreamUrl by viewModel.videoStreamUrl.collectAsStateWithLifecycle()
                                 printer?.let {

@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -60,6 +62,7 @@ fun PrinterDetailScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
             .fillMaxSize()
     ) { // Added modifier to the Column
         Text(text = printer.name, style = MaterialTheme.typography.headlineLarge)
