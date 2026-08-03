@@ -13,21 +13,16 @@ class PrinterDetailViewModel(
     private val printerId: String
 ) : ViewModel() {
 
-
-    val printer by lazy {
-        repository.getPrinterDetail(printerId)
+    val printer = repository.getPrinterDetail(printerId)
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), initialValue = null)
-    }
 
     /**
      * The MJPEG stream URL to display, or null if the printer offers no reachable stream. The HEAD
      * probe runs only when the printer's IP changes, not on every status update.
      */
-    val videoStreamUrl by lazy {
-        repository.getPrinterDetail(printerId)
+    val videoStreamUrl = repository.getPrinterDetail(printerId)
             .map { it.ipAddress }
             .distinctUntilChanged()
             .map { ip -> repository.getVideoStreamUrl(ip) }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), initialValue = null)
-    }
 }
