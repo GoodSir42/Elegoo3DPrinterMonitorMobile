@@ -29,6 +29,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 private val RECONNECT_DELAY = 5.seconds
@@ -93,6 +95,20 @@ class DataRepository(
 
     fun getPrinterList(): Flow<List<PrinterEntity>> =
         printers.map { fullPrinters -> fullPrinters.map { PrinterEntity(it) } }
+
+    /**
+     * One-shot fetch for background callers (e.g. the home-screen widget) that must not hold a
+     * persistent connection. Subscribes to the discovery pipeline for [window] — long enough for the
+     * broadcast reply and, for websocket-reporting printers, the first status frame to arrive — then
+     * unsubscribes so the socket closes. Returns the most recent snapshot seen in that window.
+     */
+    suspend fun snapshotPrinters(window: Duration): List<PrinterEntity> {
+        var latest = emptyList<PrinterEntity>()
+        withTimeoutOrNull(window) {
+            getPrinterList().collect { latest = it }
+        }
+        return latest
+    }
 
     fun getPrinterDetail(id: String): Flow<FullPrinterEntity> =
         printers.mapNotNull { allPrinters -> allPrinters.find { it.id == id } }

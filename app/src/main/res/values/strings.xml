@@ -30,4 +30,9 @@
     <string name="elapsed_time_label">Elapsed</string>
     <string name="estimated_leftover_time_label">Remaining</string>
     <string name="eta_label">ETA</string>
+    <string name="widget_description">Shows active Elegoo prints and their progress</string>
+    <string name="widget_searching">Searching for printers…</string>
+    <string name="widget_no_active_prints">No active prints</string>
+    <string name="widget_refresh">Refresh</string>
+    <string name="widget_loading">Loading…</string>
 </resources>
