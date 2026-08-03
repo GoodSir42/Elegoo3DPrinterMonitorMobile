@@ -1,27 +1,27 @@
 package eu.kutscheid.elegoomonitor.presentation
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Badge
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import eu.kutscheid.elegoomonitor.R
@@ -30,116 +30,131 @@ import eu.kutscheid.elegoomonitor.domain.model.PrinterStatus
 import eu.kutscheid.elegoomonitor.domain.model.PrinterType
 import eu.kutscheid.elegoomonitor.ui.theme.ElegooMonitorTheme
 
+/**
+ * Minimum card width; [GridCells.Adaptive] uses it to pick the column count, so phones show a
+ * single column while foldables and tablets fan out into two or more.
+ */
+private val MinCardWidth = 340.dp
+
 @Composable
 fun PrinterListScreen(
     printers: List<PrinterEntity>,
     onPrinterSelected: (printerId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = MinCardWidth),
         modifier = modifier,
         contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        items(printers) { printer ->
-            Card(modifier = Modifier.clickable(onClick = {
-                onPrinterSelected(printer.id)
-            })) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                ) {
-                    FlowRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalArrangement = Arrangement.Center,
-                    ) {
-                        Text(printer.name, style = MaterialTheme.typography.headlineLarge)
-                        Badge(
-                            containerColor = colorForStatus(printer.status),
-                            contentColor = foregroundColorForStatus(printer.status),
-                        ) {
-                            Text(
-                                when (printer.status) {
-                                    PrinterStatus.Ready -> stringResource(R.string.printer_status_ready)
-                                    PrinterStatus.Printing -> stringResource(R.string.printer_status_printing)
-                                    PrinterStatus.Retracting -> stringResource(R.string.printer_status_retracting)
-                                    PrinterStatus.Exposing -> stringResource(R.string.printer_status_exposing)
-                                    PrinterStatus.Lifting -> stringResource(R.string.printer_status_lifting)
-                                    PrinterStatus.Pausing -> stringResource(R.string.printer_status_pausing)
-                                    PrinterStatus.Paused -> stringResource(R.string.printer_status_paused)
-                                    PrinterStatus.Cancelling -> stringResource(R.string.printer_status_cancelling)
-                                    PrinterStatus.Finalizing -> stringResource(R.string.printer_status_finalizing)
-                                    PrinterStatus.Cancelled -> stringResource(R.string.printer_status_cancelled)
-                                    PrinterStatus.Complete -> stringResource(R.string.printer_status_complete)
-                                    PrinterStatus.Unknown -> stringResource(R.string.printer_status_unknown)
-                                },
-                                modifier = Modifier.padding(2.dp)
-                            )
-                        }
-                    }
-                    Row {
-                        Column(Modifier.weight(1f)) {
-                            Text(
-                                stringResource(R.string.printer_resolution, printer.resolution),
-                                style = MaterialTheme.typography.labelSmall,
-                            )
-                            Text(
-                                stringResource(
-                                    R.string.printer_firmware_version,
-                                    printer.firmwareVersion
-                                ),
-                                style = MaterialTheme.typography.labelSmall,
-                            )
-                            if (printer.progress > 0) {
-                                Text(
-                                    stringResource(
-                                        R.string.printer_progress_percent,
-                                        (printer.progress * 100)
-                                    ),
-                                    style = MaterialTheme.typography.labelLarge,
-                                )
-                            }
-                        }
-                        Image(
-                            painterResource(
-                                when (printer.type) {
-                                    PrinterType.MARS_4 -> R.drawable.printer_mars4ultra
-                                    PrinterType.SATURN_3 -> R.drawable.printer_saturn3ultra
-                                    PrinterType.CENTAURI_CARBON -> R.drawable.printer_default
-                                    PrinterType.UNKNOWN -> R.drawable.printer_default
-                                }
-                            ),
-                            contentDescription = stringResource(
-                                R.string.content_description_printer_image,
-                                printer.type.displayName
-                            ),
-                            modifier = Modifier.size(80.dp)
-                        )
-                    }
+        items(printers, key = { it.id }) { printer ->
+            PrinterCard(
+                printer = printer,
+                onClick = { onPrinterSelected(printer.id) },
+            )
+        }
+    }
+}
 
+@Composable
+private fun PrinterCard(
+    printer: PrinterEntity,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(onClick = onClick, modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.Top,
+            ) {
+                Text(
+                    text = printer.name,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f),
+                )
+                StatusPill(printer.status)
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(
+                    painter = painterResource(
+                        when (printer.type) {
+                            PrinterType.MARS_4 -> R.drawable.printer_mars4ultra
+                            PrinterType.SATURN_3 -> R.drawable.printer_saturn3ultra
+                            PrinterType.CENTAURI_CARBON -> R.drawable.printer_default
+                            PrinterType.UNKNOWN -> R.drawable.printer_default
+                        }
+                    ),
+                    contentDescription = stringResource(
+                        R.string.content_description_printer_image,
+                        printer.type.displayName
+                    ),
+                    modifier = Modifier.size(72.dp)
+                )
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.printer_resolution, printer.resolution),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        text = stringResource(
+                            R.string.printer_firmware_version,
+                            printer.firmwareVersion
+                        ),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
+            }
+
+            if (printer.progress > 0) {
+                PrinterProgress(printer.progress.toFloat())
             }
         }
     }
 }
 
-internal fun colorForStatus(status: PrinterStatus): Color {
-    return when (status) {
-        PrinterStatus.Ready, PrinterStatus.Paused -> Color(0xFF999999)
-        PrinterStatus.Pausing, PrinterStatus.Cancelling -> Color(0xFFc2b85c)
-        PrinterStatus.Cancelled -> Color(0xFFc25c5c)
-        PrinterStatus.Complete -> Color(0xFF64c25c)
-        // Default blue color
-        else -> Color(0xFF0077cc)
-    }
-}
-
-internal fun foregroundColorForStatus(status: PrinterStatus): Color {
-    return when (status) {
-        PrinterStatus.Pausing, PrinterStatus.Cancelling -> Color.Black
-        else -> Color.White
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun PrinterProgress(progress: Float) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                text = stringResource(R.string.detail_label_complete),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = stringResource(R.string.printer_progress_percent_short, progress * 100),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold,
+            )
+        }
+        LinearWavyProgressIndicator(
+            progress = { progress },
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
@@ -155,24 +170,24 @@ private fun PrinterListScreenPreview() {
                     name = "Test Printer 1",
                     type = PrinterType.MARS_4,
                     status = PrinterStatus.Complete,
-                    resolution = "12x13",
+                    resolution = "4098 x 2560",
                     firmwareVersion = "v1.2.3",
-                    progress = 0.0,
+                    progress = 1.0,
                 ),
                 PrinterEntity(
                     id = "1234",
                     name = "Test Printer 2",
                     type = PrinterType.SATURN_3,
-                    status = PrinterStatus.Pausing,
-                    resolution = "12x13",
+                    status = PrinterStatus.Printing,
+                    resolution = "11520 x 5120",
                     firmwareVersion = "v1.2.3",
-                    progress = 0.123456,
+                    progress = 0.42,
                 ),
                 PrinterEntity(
                     id = "1234",
                     name = "Test Printer with a very long name because it has to be tested",
                     type = PrinterType.UNKNOWN,
-                    status = PrinterStatus.Printing,
+                    status = PrinterStatus.Pausing,
                     resolution = "12x13",
                     firmwareVersion = "v1.2.3",
                     progress = 0.123456,
@@ -180,5 +195,4 @@ private fun PrinterListScreenPreview() {
             )
         )
     }
-
 }

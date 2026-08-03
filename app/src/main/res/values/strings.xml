@@ -21,5 +21,13 @@
     <string name="licenses">Open Source Licenses</string>
     <string name="estimated_leftover_time">Estimated Leftover Time: %1$s</string>
     <string name="elapsed_time">Elapsed Time: %1$s</string>
-    <string name="current_layer">Current Layer: %1$d / %2$d</string>
+    <string name="current_layer">Layer %1$d / %2$d</string>
+    <string name="printer_progress_percent_short">%1$.0f%%</string>
+    <string name="detail_label_model">Model</string>
+    <string name="detail_label_resolution">Resolution</string>
+    <string name="detail_label_firmware">Firmware</string>
+    <string name="detail_label_complete">Complete</string>
+    <string name="elapsed_time_label">Elapsed</string>
+    <string name="estimated_leftover_time_label">Remaining</string>
+    <string name="eta_label">ETA</string>
 </resources>
