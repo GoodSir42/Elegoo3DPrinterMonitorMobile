@@ -1,4 +1,5 @@
 import com.github.triplet.gradle.androidpublisher.ReleaseStatus
+import com.github.triplet.gradle.androidpublisher.ResolutionStrategy
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -64,7 +65,10 @@ android {
 
 play {
     enabled = System.getenv("CI") == "true"
-    resolutionStrategy = com.github.triplet.gradle.androidpublisher.ResolutionStrategy.AUTO
+    // AUTO_OFFSET rather than AUTO: AUTO normalises any single-output module to
+    // (highest code on Play + 1), so the phone and watch bundles would be assigned the same
+    // version code. AUTO_OFFSET adds the local code to the Play maximum, keeping them distinct.
+    resolutionStrategy = ResolutionStrategy.AUTO_OFFSET
     defaultToAppBundles = true
     track = "internal"
     releaseStatus = ReleaseStatus.COMPLETED
@@ -78,10 +82,13 @@ kotlin {
 
 dependencies {
 
+    implementation(project(":shared"))
+    implementation(libs.play.services.wearable)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
@@ -102,18 +109,19 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.kotlinx.serialization.core)
 
-    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
     implementation(libs.koin.composeViewmodel)
+    implementation(libs.koin.workmanager)
     implementation(libs.aboutlibraries.compose.m3)
     implementation(libs.aboutlibraries.core)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(composeBom)
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

@@ -125,7 +125,7 @@ class PrinterDataParsingTest {
         val centauri = FullPrinterEntity(json.decodeFromString<PrinterItem>(centauriPayload))
         assertEquals(PrinterType.CENTAURI_CARBON, centauri.type)
         assertEquals(PrinterStatus.Unknown, centauri.status) // no Status block -> Unknown
-        assertEquals("", centauri.resolution)
+        assertNull(centauri.resolution) // not reported by the nested format
         assertEquals(0.0, centauri.progress, 0.0) // no active print, no divide-by-zero
 
         val mars = FullPrinterEntity(json.decodeFromString<PrinterItem>(marsPayload))

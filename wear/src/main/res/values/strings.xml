@@ -1,0 +1,16 @@
+<resources>
+    <string name="wear_app_name" translatable="false">Elegoo Monitor</string>
+
+    <!-- Complication -->
+    <string name="complication_label">Print progress</string>
+    <string name="complication_percent" translatable="false">%1$d%%</string>
+    <string name="complication_idle_text" translatable="false">—</string>
+    <string name="complication_no_active_print">No active prints</string>
+    <string name="complication_progress_description">%1$s, %2$d%% complete, %3$s</string>
+
+    <!-- App screen -->
+    <string name="wear_waiting_for_phone">Waiting for your phone. Open Elegoo Monitor there.</string>
+    <string name="wear_no_active_prints">No active prints</string>
+    <string name="wear_layer">Layer %1$d / %2$d</string>
+    <string name="wear_refresh">Refresh</string>
+</resources>

@@ -102,10 +102,17 @@ class DataRepository(
      * broadcast reply and, for websocket-reporting printers, the first status frame to arrive — then
      * unsubscribes so the socket closes. Returns the most recent snapshot seen in that window.
      */
-    suspend fun snapshotPrinters(window: Duration): List<PrinterEntity> {
-        var latest = emptyList<PrinterEntity>()
+    suspend fun snapshotPrinters(window: Duration): List<PrinterEntity> =
+        snapshotFullPrinters(window).map { PrinterEntity(it) }
+
+    /**
+     * As [snapshotPrinters], but keeping the layer and timing fields. The widget refresh uses this so
+     * a single discovery window can feed both the widget and the watch complication.
+     */
+    suspend fun snapshotFullPrinters(window: Duration): List<FullPrinterEntity> {
+        var latest = emptyList<FullPrinterEntity>()
         withTimeoutOrNull(window) {
-            getPrinterList().collect { latest = it }
+            printers.collect { latest = it }
         }
         return latest
     }

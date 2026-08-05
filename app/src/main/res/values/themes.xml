@@ -2,6 +2,5 @@
 <resources>
 
     <style name="Theme.ElegooMonitor" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowSplashScreenBackground">@color/ic_launcher_background</item>
     </style>
 </resources>

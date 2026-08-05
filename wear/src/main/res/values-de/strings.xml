@@ -1,0 +1,10 @@
+<resources>
+    <string name="complication_label">Druckfortschritt</string>
+    <string name="complication_no_active_print">Keine laufenden Drucke</string>
+    <string name="complication_progress_description">%1$s, %2$d %% abgeschlossen, %3$s</string>
+
+    <string name="wear_waiting_for_phone">Warte auf dein Handy. Öffne dort Elegoo Monitor.</string>
+    <string name="wear_no_active_prints">Keine laufenden Drucke</string>
+    <string name="wear_layer">Schicht %1$d / %2$d</string>
+    <string name="wear_refresh">Aktualisieren</string>
+</resources>

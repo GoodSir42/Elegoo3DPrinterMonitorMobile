@@ -25,6 +25,9 @@ jobs:
           ANDROID_PUBLISHER_CREDENTIALS: ${{ secrets.ANDROID_PUBLISHER_CREDENTIALS }}
           KEY_STORE_KEY_PASSWORD: ${{ secrets.KEY_STORE_KEY_PASSWORD }}
           KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
-        run: ./gradlew :app:publishReleaseBundle
+        # Both in ONE invocation: the plugin shares a single Play edit per applicationId and
+        # commits it once at the end. Two separate gradlew calls would create two edits, and the
+        # second release would replace the first on the track.
+        run: ./gradlew :app:publishReleaseBundle :wear:publishReleaseBundle
 
           

@@ -11,8 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import eu.kutscheid.elegoomonitor.R
 import eu.kutscheid.elegoomonitor.domain.model.PrinterStatus
+import eu.kutscheid.elegoomonitor.domain.model.labelResId
 
 /** Rounded, filled status chip shared by the list and detail screens. */
 @Composable
@@ -33,20 +33,7 @@ internal fun StatusPill(status: PrinterStatus, modifier: Modifier = Modifier) {
 }
 
 @Composable
-internal fun statusLabel(status: PrinterStatus): String = when (status) {
-    PrinterStatus.Ready -> stringResource(R.string.printer_status_ready)
-    PrinterStatus.Printing -> stringResource(R.string.printer_status_printing)
-    PrinterStatus.Retracting -> stringResource(R.string.printer_status_retracting)
-    PrinterStatus.Exposing -> stringResource(R.string.printer_status_exposing)
-    PrinterStatus.Lifting -> stringResource(R.string.printer_status_lifting)
-    PrinterStatus.Pausing -> stringResource(R.string.printer_status_pausing)
-    PrinterStatus.Paused -> stringResource(R.string.printer_status_paused)
-    PrinterStatus.Cancelling -> stringResource(R.string.printer_status_cancelling)
-    PrinterStatus.Finalizing -> stringResource(R.string.printer_status_finalizing)
-    PrinterStatus.Cancelled -> stringResource(R.string.printer_status_cancelled)
-    PrinterStatus.Complete -> stringResource(R.string.printer_status_complete)
-    PrinterStatus.Unknown -> stringResource(R.string.printer_status_unknown)
-}
+internal fun statusLabel(status: PrinterStatus): String = stringResource(status.labelResId())
 
 internal fun colorForStatus(status: PrinterStatus): Color {
     return when (status) {

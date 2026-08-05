@@ -1,0 +1,14 @@
+<resources>
+    <string name="printer_status_ready">Bereit</string>
+    <string name="printer_status_printing">Druckt</string>
+    <string name="printer_status_retracting">Zurückziehen</string>
+    <string name="printer_status_exposing">Belichten</string>
+    <string name="printer_status_lifting">Anheben</string>
+    <string name="printer_status_pausing">Wird angehalten</string>
+    <string name="printer_status_paused">Angehalten</string>
+    <string name="printer_status_cancelling">Wird abgebrochen</string>
+    <string name="printer_status_finalizing">Wird abgeschlossen</string>
+    <string name="printer_status_cancelled">Abgebrochen</string>
+    <string name="printer_status_complete">Fertig</string>
+    <string name="printer_status_unknown">Unbekannt</string>
+</resources>

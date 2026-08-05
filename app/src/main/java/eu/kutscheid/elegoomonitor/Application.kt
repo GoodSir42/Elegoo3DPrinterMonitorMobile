@@ -4,6 +4,8 @@ import android.app.Application
 import co.touchlab.kermit.LogcatWriter
 import co.touchlab.kermit.Logger
 import eu.kutscheid.elegoomonitor.di.appModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
 
 class Application: Application() {
@@ -11,6 +13,8 @@ class Application: Application() {
         super.onCreate()
 
         startKoin {
+            androidContext(this@Application)
+            workManagerFactory()
             modules(appModule())
         }
 

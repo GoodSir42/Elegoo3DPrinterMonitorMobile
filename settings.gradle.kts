@@ -26,3 +26,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Elegoo Monitor"
 include(":app")
+include(":shared")
+include(":wear")

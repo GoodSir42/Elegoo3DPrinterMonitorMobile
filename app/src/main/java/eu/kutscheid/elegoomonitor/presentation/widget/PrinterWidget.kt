@@ -34,6 +34,7 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import eu.kutscheid.elegoomonitor.R
+import eu.kutscheid.elegoomonitor.domain.model.labelResId
 import eu.kutscheid.elegoomonitor.presentation.MainActivity
 import kotlin.math.roundToInt
 
