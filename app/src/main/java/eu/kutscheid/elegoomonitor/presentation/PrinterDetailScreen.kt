@@ -91,6 +91,7 @@ fun PrinterDetailScreen(
                 text = printer.name,
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
+                modifier = Modifier.sharedBounds(printerNameKey(printer.id)),
             )
 
             if (wide) {
@@ -144,9 +145,14 @@ private fun HeaderCard(printer: FullPrinterEntity, modifier: Modifier = Modifier
                         R.string.content_description_printer_image,
                         printer.type.displayName
                     ),
-                    modifier = Modifier.size(120.dp)
+                    modifier = Modifier
+                        .size(120.dp)
+                        .printerSharedElement(printerImageKey(printer.id))
                 )
-                StatusPill(printer.status)
+                StatusPill(
+                    printer.status,
+                    modifier = Modifier.sharedBounds(printerStatusKey(printer.id)),
+                )
             }
             HorizontalDivider()
             InfoRow(

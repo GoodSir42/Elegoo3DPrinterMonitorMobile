@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import eu.kutscheid.elegoomonitor.R
 import eu.kutscheid.elegoomonitor.domain.model.PrinterEntity
@@ -40,7 +40,7 @@ private val MinCardWidth = 340.dp
 fun PrinterListScreen(
     printers: List<PrinterEntity>,
     onPrinterSelected: (printerId: String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = MinCardWidth),
@@ -80,9 +80,14 @@ private fun PrinterCard(
                     text = printer.name,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .sharedBounds(printerNameKey(printer.id)),
                 )
-                StatusPill(printer.status)
+                StatusPill(
+                    printer.status,
+                    modifier = Modifier.sharedBounds(printerStatusKey(printer.id)),
+                )
             }
 
             Row(
@@ -103,7 +108,9 @@ private fun PrinterCard(
                         R.string.content_description_printer_image,
                         printer.type.displayName
                     ),
-                    modifier = Modifier.size(72.dp)
+                    modifier = Modifier
+                        .size(72.dp)
+                        .printerSharedElement(printerImageKey(printer.id))
                 )
                 Column(
                     modifier = Modifier.weight(1f),
@@ -158,7 +165,7 @@ private fun PrinterProgress(progress: Float) {
     }
 }
 
-@Preview
+@PreviewScreenSizes
 @Composable
 private fun PrinterListScreenPreview() {
     ElegooMonitorTheme {
@@ -184,7 +191,7 @@ private fun PrinterListScreenPreview() {
                     progress = 0.42,
                 ),
                 PrinterEntity(
-                    id = "1234",
+                    id = "12345",
                     name = "Test Printer with a very long name because it has to be tested",
                     type = PrinterType.UNKNOWN,
                     status = PrinterStatus.Pausing,

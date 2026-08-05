@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -37,7 +40,7 @@ import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -55,116 +58,124 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                NavDisplay(
-                    backStack = backStack,
-                    onBack = { backStack.removeLastOrNull() }
-                ) { key ->
-                    when (key) {
-                        is Destination.InitialLoading -> NavEntry(key) {
-                            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                                Column(
-                                    verticalArrangement = Arrangement.Center,
-                                    modifier = Modifier
-                                        .padding(innerPadding)
-                                        .fillMaxSize()
-                                        .padding(16.dp)
-                                ) {
-                                    Text(
-                                        stringResource(R.string.main_scanning_and_waiting),
-                                        style = MaterialTheme.typography.headlineLarge,
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                                    )
-                                    LoadingIndicator(
-                                        modifier = Modifier
-                                            .size(120.dp)
-                                            .align(
-                                                Alignment.CenterHorizontally
+                SharedTransitionLayout {
+                    CompositionLocalProvider(LocalSharedTransitionScope provides this) {
+                        NavDisplay(
+                            backStack = backStack,
+                            onBack = { backStack.removeLastOrNull() }
+                        ) { key ->
+                            when (key) {
+                                is Destination.InitialLoading -> NavEntry(key) {
+                                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                                        Column(
+                                            verticalArrangement = Arrangement.Center,
+                                            modifier = Modifier
+                                                .padding(innerPadding)
+                                                .fillMaxSize()
+                                                .padding(16.dp)
+                                        ) {
+                                            Text(
+                                                stringResource(R.string.main_scanning_and_waiting),
+                                                style = MaterialTheme.typography.headlineLarge,
+                                                textAlign = TextAlign.Center,
+                                                modifier = Modifier.align(Alignment.CenterHorizontally)
                                             )
-                                    )
-                                }
-                            }
-                        }
-
-                        is Destination.PrinterList -> NavEntry(key) {
-                            Scaffold(
-                                modifier = Modifier.fillMaxSize(),
-                                topBar = {
-                                    TopAppBar(
-                                        title = { Text(stringResource(R.string.app_name)) },
-                                        actions = {
-                                            IconButton(onClick = { backStack.add(Destination.LicenseOverview) }) {
-                                                Icon(
-                                                    painterResource(R.drawable.ic_info),
-                                                    contentDescription = stringResource(R.string.licenses)
-                                                )
-                                            }
+                                            LoadingIndicator(
+                                                modifier = Modifier
+                                                    .size(120.dp)
+                                                    .align(
+                                                        Alignment.CenterHorizontally
+                                                    )
+                                            )
                                         }
-                                    )
+                                    }
                                 }
-                            ) { innerPadding ->
-                                PrinterListScreen(
-                                    printers = printerList,
-                                    onPrinterSelected = { printerId ->
-                                        backStack.add(Destination.PrinterDetail(printerId))
-                                    },
-                                    modifier = Modifier.padding(innerPadding)
-                                )
-                            }
-                        }
 
-                        is Destination.PrinterDetail -> NavEntry(key) {
-                            Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-                                TopAppBar(title = {}, navigationIcon = {
-                                    IconButton(onClick = { backStack.removeLastOrNull() }) {
-                                        Icon(
-                                            painterResource(R.drawable.ic_arrow_back),
-                                            contentDescription = stringResource(R.string.back)
+                                is Destination.PrinterList -> NavEntry(key) {
+                                    Scaffold(
+                                        modifier = Modifier.fillMaxSize(),
+                                        topBar = {
+                                            TopAppBar(
+                                                title = { Text(stringResource(R.string.app_name)) },
+                                                actions = {
+                                                    IconButton(onClick = { backStack.add(Destination.LicenseOverview) }) {
+                                                        Icon(
+                                                            painterResource(R.drawable.ic_info),
+                                                            contentDescription = stringResource(R.string.licenses)
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                        }
+                                    ) { innerPadding ->
+                                        PrinterListScreen(
+                                            printers = printerList,
+                                            onPrinterSelected = { printerId ->
+                                                backStack.add(Destination.PrinterDetail(printerId))
+                                            },
+                                            modifier = Modifier.padding(innerPadding),
                                         )
                                     }
-                                })
-                            }) { innerPadding ->
-                                val viewModel =
-                                    koinViewModel<PrinterDetailViewModel>(
-                                        key = "detail_${key.printerId}",
-                                        parameters = {
-                                            parametersOf(key.printerId)
-                                        })
-                                val printer by viewModel.printer.collectAsStateWithLifecycle()
-                                val videoStreamUrl by viewModel.videoStreamUrl.collectAsStateWithLifecycle()
-                                printer?.let {
-                                    PrinterDetailScreen(
-                                        printer = it,
-                                        videoStreamUrl = videoStreamUrl,
-                                        modifier = Modifier.padding(innerPadding)
-                                    )
                                 }
-                            }
-                        }
 
-                        is Destination.LicenseOverview -> NavEntry(key) {
-                            Scaffold(
-                                modifier = Modifier.fillMaxSize(),
-                                topBar = {
-                                    TopAppBar(
-                                        title = { Text(stringResource(R.string.licenses)) },
-                                        navigationIcon = {
+                                is Destination.PrinterDetail -> NavEntry(key) {
+                                    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+                                        TopAppBar(title = {}, navigationIcon = {
                                             IconButton(onClick = { backStack.removeLastOrNull() }) {
                                                 Icon(
                                                     painterResource(R.drawable.ic_arrow_back),
                                                     contentDescription = stringResource(R.string.back)
                                                 )
                                             }
+                                        })
+                                    }) { innerPadding ->
+                                        val viewModel =
+                                            koinViewModel<PrinterDetailViewModel>(
+                                                key = "detail_${key.printerId}",
+                                                parameters = {
+                                                    parametersOf(key.printerId)
+                                                })
+                                        val printer by viewModel.printer.collectAsStateWithLifecycle()
+                                        val videoStreamUrl by viewModel.videoStreamUrl.collectAsStateWithLifecycle()
+                                        printer?.let {
+                                            PrinterDetailScreen(
+                                                printer = it,
+                                                videoStreamUrl = videoStreamUrl,
+                                                modifier = Modifier.padding(innerPadding),
+                                            )
                                         }
-                                    )
+                                    }
                                 }
-                            ) { innerPadding ->
-                                LicenseOverviewScreen(modifier = Modifier.padding(innerPadding))
-                            }
-                        }
 
-                        else -> NavEntry(key) {
-                            Text("Unknown destination")
+                                is Destination.LicenseOverview -> NavEntry(key) {
+                                    Scaffold(
+                                        modifier = Modifier.fillMaxSize(),
+                                        topBar = {
+                                            TopAppBar(
+                                                title = { Text(stringResource(R.string.licenses)) },
+                                                navigationIcon = {
+                                                    IconButton(onClick = { backStack.removeLastOrNull() }) {
+                                                        Icon(
+                                                            painterResource(R.drawable.ic_arrow_back),
+                                                            contentDescription = stringResource(R.string.back)
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                        }
+                                    ) { innerPadding ->
+                                        LicenseOverviewScreen(
+                                            modifier = Modifier.padding(
+                                                innerPadding
+                                            )
+                                        )
+                                    }
+                                }
+
+                                else -> NavEntry(key) {
+                                    Text("Unknown destination")
+                                }
+                            }
                         }
                     }
                 }
