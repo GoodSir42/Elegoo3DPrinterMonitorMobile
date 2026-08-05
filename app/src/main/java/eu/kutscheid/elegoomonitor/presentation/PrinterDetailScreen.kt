@@ -5,18 +5,17 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularWavyProgressIndicator
@@ -59,9 +58,6 @@ private val timeFormatter = DateTimeComponents.Format {
     minute()
 }
 
-/** Width at which we switch from a single stacked column to a balanced two-pane layout. */
-private val WideBreakpoint = 640.dp
-
 /** Keeps content readable instead of stretching edge-to-edge on tablets and unfolded foldables. */
 private val MaxContentWidth = 900.dp
 
@@ -72,66 +68,47 @@ fun PrinterDetailScreen(
     modifier: Modifier = Modifier,
     videoStreamUrl: String? = null,
 ) {
-    BoxWithConstraints(
+    LazyVerticalStaggeredGrid(
+        contentPadding = PaddingValues(16.dp),
+        verticalItemSpacing = 16.dp,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        columns = StaggeredGridCells.Adaptive(300.dp),
         modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        contentAlignment = Alignment.TopCenter,
+            .widthIn(max = MaxContentWidth)
+            .fillMaxWidth()
     ) {
-        val wide = maxWidth >= WideBreakpoint
+        item {
+            HeaderCard(printer)
+        }
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .widthIn(max = MaxContentWidth)
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-        ) {
-            Text(
-                text = printer.name,
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.sharedBounds(printerNameKey(printer.id)),
-            )
+        videoStreamUrl?.let {
+            item { StreamCard(url = it) }
+        }
 
-            if (wide) {
-                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier.weight(1f),
-                    ) {
-                        HeaderCard(printer)
-                        videoStreamUrl?.let { StreamCard(url = it) }
-                    }
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier.weight(1f),
-                    ) {
-                        ProgressCard(printer)
-                        StatsCard(printer)
-                    }
-                }
-            } else {
-                videoStreamUrl?.let { StreamCard(url = it) }
-                HeaderCard(printer)
-                ProgressCard(printer)
-                StatsCard(printer)
-            }
+        item {
+            ProgressCard(printer)
+        }
+        item {
+            StatsCard(printer)
         }
     }
 }
 
 @Composable
 private fun HeaderCard(printer: FullPrinterEntity, modifier: Modifier = Modifier) {
-    Card(modifier = modifier.fillMaxWidth()) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .sharedBounds(printerDetails(printer.id))
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Row {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Image(
                     painter = painterResource(
                         when (printer.type) {
@@ -187,7 +164,7 @@ private fun ProgressCard(printer: FullPrinterEntity, modifier: Modifier = Modifi
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp),
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
@@ -198,7 +175,7 @@ private fun ProgressCard(printer: FullPrinterEntity, modifier: Modifier = Modifi
             Box(contentAlignment = Alignment.Center) {
                 CircularWavyProgressIndicator(
                     progress = { progress },
-                    modifier = Modifier.size(160.dp),
+                    modifier = Modifier.size(120.dp),
                 )
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
@@ -234,7 +211,7 @@ private fun StatsCard(printer: FullPrinterEntity, modifier: Modifier = Modifier)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             StatRow(
@@ -340,7 +317,7 @@ private fun StreamCard(url: String, modifier: Modifier = Modifier) {
                 onRelease = { it.destroy() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(4f / 3f),
+                    .aspectRatio(16f / 9f),
             )
         }
     }

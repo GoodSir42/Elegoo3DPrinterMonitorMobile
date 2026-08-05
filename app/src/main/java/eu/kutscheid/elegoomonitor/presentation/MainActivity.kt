@@ -104,7 +104,8 @@ class MainActivity : ComponentActivity() {
                                                             contentDescription = stringResource(R.string.licenses)
                                                         )
                                                     }
-                                                }
+                                                },
+                                                modifier = Modifier.sharedBounds(topBar())
                                             )
                                         }
                                     ) { innerPadding ->
@@ -119,24 +120,38 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 is Destination.PrinterDetail -> NavEntry(key) {
+                                    val viewModel =
+                                        koinViewModel<PrinterDetailViewModel>(
+                                            key = "detail_${key.printerId}",
+                                            parameters = {
+                                                parametersOf(key.printerId)
+                                            })
+                                    val printer by viewModel.printer.collectAsStateWithLifecycle()
+                                    val videoStreamUrl by viewModel.videoStreamUrl.collectAsStateWithLifecycle()
+
                                     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-                                        TopAppBar(title = {}, navigationIcon = {
-                                            IconButton(onClick = { backStack.removeLastOrNull() }) {
-                                                Icon(
-                                                    painterResource(R.drawable.ic_arrow_back),
-                                                    contentDescription = stringResource(R.string.back)
-                                                )
-                                            }
-                                        })
+                                        TopAppBar(
+                                            title = {
+                                                printer?.let {
+                                                    Text(
+                                                        it.name,
+                                                        modifier = Modifier.sharedBounds(
+                                                            printerNameKey(it.id)
+                                                        )
+                                                    )
+                                                }
+                                            }, navigationIcon = {
+                                                IconButton(onClick = { backStack.removeLastOrNull() }) {
+                                                    Icon(
+                                                        painterResource(R.drawable.ic_arrow_back),
+                                                        contentDescription = stringResource(R.string.back)
+                                                    )
+                                                }
+                                            },
+                                            modifier = Modifier.sharedBounds(topBar())
+                                        )
                                     }) { innerPadding ->
-                                        val viewModel =
-                                            koinViewModel<PrinterDetailViewModel>(
-                                                key = "detail_${key.printerId}",
-                                                parameters = {
-                                                    parametersOf(key.printerId)
-                                                })
-                                        val printer by viewModel.printer.collectAsStateWithLifecycle()
-                                        val videoStreamUrl by viewModel.videoStreamUrl.collectAsStateWithLifecycle()
+
                                         printer?.let {
                                             PrinterDetailScreen(
                                                 printer = it,

@@ -56,7 +56,7 @@ class DataRepository(
                 initialList + item
             }
         }
-        .shareIn(scope, started = SharingStarted.WhileSubscribed(), replay = 1)
+        .shareIn(scope, started = SharingStarted.WhileSubscribed(5000), replay = 1)
 
     /**
      * Latest live status per mainboard id, collected from the websocket of every discovered printer

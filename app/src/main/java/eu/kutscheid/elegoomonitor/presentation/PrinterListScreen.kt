@@ -64,7 +64,12 @@ private fun PrinterCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(onClick = onClick, modifier = modifier.fillMaxWidth()) {
+    Card(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .sharedBounds(printerDetails(printer.id))
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
