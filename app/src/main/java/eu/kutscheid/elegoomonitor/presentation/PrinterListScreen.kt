@@ -116,11 +116,14 @@ private fun PrinterCard(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                 ) {
-                    Text(
-                        text = stringResource(R.string.printer_resolution, printer.resolution),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    if (printer.resolution != null) {
+                        Text(
+                            text = stringResource(R.string.printer_resolution, printer.resolution),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.printerSharedElement(printerResolutionKey(printer.id))
+                        )
+                    }
                     Text(
                         text = stringResource(
                             R.string.printer_firmware_version,

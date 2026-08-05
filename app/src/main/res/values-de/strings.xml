@@ -1,0 +1,36 @@
+<resources>
+    <string name="printer_progress_percent">Fortschritt: %1$.2f %%</string>
+    <string name="printer_resolution">Auflösung: %1$s</string>
+    <string name="printer_firmware_version">Firmware-Version: %1$s</string>
+    <string name="printer_status_ready">Bereit</string>
+    <string name="printer_status_printing">Druckt</string>
+    <string name="printer_status_retracting">Zurückziehen</string>
+    <string name="printer_status_exposing">Belichten</string>
+    <string name="printer_status_lifting">Anheben</string>
+    <string name="printer_status_pausing">Wird angehalten</string>
+    <string name="printer_status_paused">Angehalten</string>
+    <string name="printer_status_cancelling">Wird abgebrochen</string>
+    <string name="printer_status_finalizing">Wird abgeschlossen</string>
+    <string name="printer_status_cancelled">Abgebrochen</string>
+    <string name="printer_status_complete">Fertig</string>
+    <string name="printer_status_unknown">Unbekannt</string>
+    <string name="content_description_printer_image">Bild eines 3D-Druckers vom Typ %1$s</string>
+    <string name="main_scanning_and_waiting">Netzwerk wird durchsucht, warte auf Daten</string>
+    <string name="back">Zurück</string>
+    <string name="licenses">Open-Source-Lizenzen</string>
+    <string name="estimated_leftover_time">Geschätzte Restzeit: %1$s</string>
+    <string name="elapsed_time">Vergangene Zeit: %1$s</string>
+    <string name="current_layer">Schicht %1$d / %2$d</string>
+    <string name="detail_label_model">Modell</string>
+    <string name="detail_label_resolution">Auflösung</string>
+    <string name="detail_label_firmware">Firmware</string>
+    <string name="detail_label_complete">Abgeschlossen</string>
+    <string name="elapsed_time_label">Vergangen</string>
+    <string name="estimated_leftover_time_label">Restzeit</string>
+    <string name="eta_label">Fertig um</string>
+    <string name="widget_description">Zeigt laufende Elegoo-Drucke und deren Fortschritt</string>
+    <string name="widget_searching">Suche nach Druckern…</string>
+    <string name="widget_no_active_prints">Keine laufenden Drucke</string>
+    <string name="widget_refresh">Aktualisieren</string>
+    <string name="widget_loading">Wird geladen…</string>
+</resources>

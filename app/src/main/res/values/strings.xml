@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Elegoo Monitor</string>
+    <string name="app_name" translatable="false">Elegoo Monitor</string>
     <string name="printer_progress_percent">Progress: %1$.2f%%</string>
     <string name="printer_resolution">Resolution: %1$s</string>
     <string name="printer_firmware_version">Firmware Version: %1$s</string>
@@ -22,7 +22,7 @@
     <string name="estimated_leftover_time">Estimated Leftover Time: %1$s</string>
     <string name="elapsed_time">Elapsed Time: %1$s</string>
     <string name="current_layer">Layer %1$d / %2$d</string>
-    <string name="printer_progress_percent_short">%1$.0f%%</string>
+    <string name="printer_progress_percent_short" translatable="false">%1$.0f%%</string>
     <string name="detail_label_model">Model</string>
     <string name="detail_label_resolution">Resolution</string>
     <string name="detail_label_firmware">Firmware</string>

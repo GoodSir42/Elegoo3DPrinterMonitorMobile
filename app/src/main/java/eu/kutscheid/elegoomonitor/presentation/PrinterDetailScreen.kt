@@ -159,10 +159,13 @@ private fun HeaderCard(printer: FullPrinterEntity, modifier: Modifier = Modifier
                 label = stringResource(R.string.detail_label_model),
                 value = printer.type.displayName,
             )
-            InfoRow(
-                label = stringResource(R.string.detail_label_resolution),
-                value = printer.resolution.ifBlank { "—" },
-            )
+            if (printer.resolution != null) {
+                InfoRow(
+                    label = stringResource(R.string.detail_label_resolution),
+                    value = printer.resolution,
+                    modifier = Modifier.printerSharedElement(printerResolutionKey(printer.id))
+                )
+            }
             InfoRow(
                 label = stringResource(R.string.detail_label_firmware),
                 value = printer.firmwareVersion,
@@ -195,7 +198,7 @@ private fun ProgressCard(printer: FullPrinterEntity, modifier: Modifier = Modifi
             Box(contentAlignment = Alignment.Center) {
                 CircularWavyProgressIndicator(
                     progress = { progress },
-                    modifier = Modifier.size(220.dp),
+                    modifier = Modifier.size(160.dp),
                 )
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
@@ -260,9 +263,9 @@ private fun StatsCard(printer: FullPrinterEntity, modifier: Modifier = Modifier)
 }
 
 @Composable
-private fun InfoRow(label: String, value: String) {
+private fun InfoRow(label: String, value: String, modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {

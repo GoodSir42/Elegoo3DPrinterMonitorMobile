@@ -22,6 +22,8 @@ val LocalSharedTransitionScope = compositionLocalOf<SharedTransitionScope?> { nu
  */
 internal fun printerImageKey(id: String) = "printer-image-$id"
 
+internal fun printerResolutionKey(id: String) = "printer-resolution-$id"
+
 internal fun printerNameKey(id: String) = "printer-name-$id"
 
 internal fun printerStatusKey(id: String) = "printer-status-$id"

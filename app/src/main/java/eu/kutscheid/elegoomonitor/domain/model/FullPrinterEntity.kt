@@ -19,7 +19,7 @@ data class FullPrinterEntity(
     val name: String,
     val type: PrinterType,
     val status: PrinterStatus,
-    val resolution: String,
+    val resolution: String?,
     val firmwareVersion: String,
     val totalLayers: Long,
     val currentLayer: Long,
@@ -40,7 +40,7 @@ data class FullPrinterEntity(
             else -> PrinterType.UNKNOWN
         },
         status = PrinterStatus.fromStatusCode(dataModel.data.status?.printInfo?.status),
-        resolution = dataModel.data.attributes.resolution ?: "",
+        resolution = dataModel.data.attributes.resolution,
         firmwareVersion = dataModel.data.attributes.firmwareVersion,
         currentLayer = dataModel.data.status?.printInfo?.currentLayer ?: 0L,
         totalLayers = dataModel.data.status?.printInfo?.totalLayer ?: 0L,

@@ -55,6 +55,11 @@ android {
     buildFeatures {
         compose = true
     }
+    androidResources {
+        // Generates res/xml/locale_config.xml from the available values-* folders and wires it
+        // into the manifest, so users can pick the app language in system settings.
+        generateLocaleConfig = true
+    }
 }
 
 play {

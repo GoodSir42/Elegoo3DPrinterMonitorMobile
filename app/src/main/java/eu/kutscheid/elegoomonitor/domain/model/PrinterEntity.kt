@@ -9,7 +9,7 @@ data class PrinterEntity(
     val name: String,
     val type: PrinterType,
     val status: PrinterStatus,
-    val resolution: String,
+    val resolution: String?,
     val firmwareVersion: String,
     val progress: Double,
 ) {
