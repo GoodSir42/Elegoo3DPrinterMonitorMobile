@@ -175,7 +175,7 @@ private fun ProgressCard(printer: FullPrinterEntity, modifier: Modifier = Modifi
             Box(contentAlignment = Alignment.Center) {
                 CircularWavyProgressIndicator(
                     progress = { progress },
-                    modifier = Modifier.size(120.dp),
+                    modifier = Modifier.size(144.dp),
                 )
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
