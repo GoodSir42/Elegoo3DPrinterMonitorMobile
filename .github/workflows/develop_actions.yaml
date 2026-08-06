@@ -28,6 +28,6 @@ jobs:
         # Both in ONE invocation: the plugin shares a single Play edit per applicationId and
         # commits it once at the end. Two separate gradlew calls would create two edits, and the
         # second release would replace the first on the track.
-        run: ./gradlew :app:publishReleaseBundle :wear:publishReleaseBundle
+        run: ./gradlew :wear:publishReleaseBundle :app:publishReleaseBundle
 
           

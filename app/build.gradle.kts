@@ -19,7 +19,7 @@ android {
         applicationId = "eu.kutscheid.elegoomonitor"
         minSdk = 30
         targetSdk = 36
-        versionCode = 1
+        versionCode = 10
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -125,4 +125,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+tasks.matching { it.name == "publishReleaseBundle" }.configureEach {
+    mustRunAfter(":wear:publishReleaseBundle")
 }

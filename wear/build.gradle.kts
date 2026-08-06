@@ -21,7 +21,7 @@ android {
         targetSdk = 36
         // Must differ from the phone app's: Play requires unique version codes across form
         // factors, and both bundles go into the same release.
-        versionCode = 2
+        versionCode = 5
         versionName = "1.0"
     }
 
@@ -72,7 +72,8 @@ play {
     enabled = System.getenv("CI") == "true"
     resolutionStrategy = ResolutionStrategy.AUTO_OFFSET
     defaultToAppBundles = true
-    track = "internal"
+    track = "wear:internal"
+    commit = true
     releaseStatus = ReleaseStatus.COMPLETED
 }
 
