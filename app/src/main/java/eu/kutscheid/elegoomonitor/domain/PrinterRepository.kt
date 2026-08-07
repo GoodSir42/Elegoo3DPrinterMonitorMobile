@@ -8,6 +8,7 @@ import eu.kutscheid.elegoomonitor.data.model.PrinterItem
 import eu.kutscheid.elegoomonitor.data.model.StatusMessage
 import eu.kutscheid.elegoomonitor.domain.model.FullPrinterEntity
 import eu.kutscheid.elegoomonitor.domain.model.PrinterEntity
+import eu.kutscheid.elegoomonitor.domain.model.isActivePrint
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +20,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -113,7 +114,7 @@ class DataRepository(
     suspend fun snapshotFullPrinters(window: Duration): List<FullPrinterEntity> {
         var latest = emptyList<FullPrinterEntity>()
         withTimeoutOrNull(window) {
-            latest = printers.firstOrNull() ?: emptyList()
+            latest = printers.first { it.any { it.status.isActivePrint } } ?: emptyList()
         }
         return latest
     }
