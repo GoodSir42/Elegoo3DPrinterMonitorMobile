@@ -34,6 +34,13 @@ enum class PrinterStatus {
             16 -> Complete
             else -> Unknown
         }
+
+        fun fromLiveStatusCode(code: Int?): PrinterStatus = when (code) {
+            0 -> Ready
+            13 -> Printing
+            else -> Unknown
+        }
+
     }
 }
 

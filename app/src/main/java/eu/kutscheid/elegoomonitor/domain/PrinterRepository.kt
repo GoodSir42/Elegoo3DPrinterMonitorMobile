@@ -114,7 +114,7 @@ class DataRepository(
     suspend fun snapshotFullPrinters(window: Duration): List<FullPrinterEntity> {
         var latest = emptyList<FullPrinterEntity>()
         withTimeoutOrNull(window) {
-            latest = printers.first { it.any { it.status.isActivePrint } } ?: emptyList()
+            latest = printers.first { it.any { it.status.isActivePrint } }
         }
         return latest
     }

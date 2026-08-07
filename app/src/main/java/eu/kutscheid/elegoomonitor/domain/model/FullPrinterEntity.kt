@@ -25,7 +25,7 @@ data class FullPrinterEntity(
     val currentLayer: Long,
     val elapsedTime: Duration,
     val estimatedTime: Duration,
-    val progress: Double = if (totalLayers > 0) currentLayer.toDouble() / totalLayers.toDouble() else 0.0,
+    val progress: Double,
 ) {
     constructor(dataModel: PrinterItem) : this(
         lastSeen = Clock.System.now(),
@@ -47,6 +47,9 @@ data class FullPrinterEntity(
         elapsedTime = (dataModel.data.status?.printInfo?.currentTicks ?: 0L).milliseconds,
         estimatedTime = ((dataModel.data.status?.printInfo?.totalTicks
             ?: 0L) - (dataModel.data.status?.printInfo?.currentTicks ?: 0L)).milliseconds,
+        progress = dataModel.data.status?.let { status ->
+            (status.printInfo.currentTicks).toDouble() / (status.printInfo.totalTicks).toDouble()
+        } ?: 0.0
     )
 
     /**
@@ -57,17 +60,13 @@ data class FullPrinterEntity(
         val printInfo = message.status.printInfo
         return copy(
             lastSeen = Clock.System.now(),
-            status = PrinterStatus.fromStatusCode(message.status.currentStatus.first()),
+            status = PrinterStatus.fromLiveStatusCode(printInfo.status),
             currentLayer = printInfo.currentLayer,
             totalLayers = printInfo.totalLayer,
             // Websocket ticks are fractional seconds (unlike the millisecond ticks in the UDP payload).
             elapsedTime = printInfo.currentTicks.seconds,
             estimatedTime = (printInfo.totalTicks - printInfo.currentTicks).seconds,
-            progress = if (printInfo.totalLayer > 0) {
-                printInfo.currentLayer.toDouble() / printInfo.totalLayer.toDouble()
-            } else {
-                0.0
-            },
+            progress = printInfo.progress.toDouble() / 100,
         )
     }
 }
