@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -64,12 +65,13 @@ private val MaxContentWidth = 900.dp
 @OptIn(ExperimentalTime::class)
 @Composable
 fun PrinterDetailScreen(
-    printer: FullPrinterEntity,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    printer: FullPrinterEntity,
     videoStreamUrl: String? = null,
 ) {
     LazyVerticalStaggeredGrid(
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = contentPadding + PaddingValues(16.dp),
         verticalItemSpacing = 16.dp,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         columns = StaggeredGridCells.Adaptive(300.dp),
@@ -329,7 +331,7 @@ private fun StreamCard(url: String, modifier: Modifier = Modifier) {
 private fun PrinterDetailScreenPreview() {
     ElegooMonitorTheme {
         PrinterDetailScreen(
-            FullPrinterEntity(
+            printer = FullPrinterEntity(
                 name = "Mars 4 Ultra",
                 type = PrinterType.MARS_4,
                 status = PrinterStatus.Printing,

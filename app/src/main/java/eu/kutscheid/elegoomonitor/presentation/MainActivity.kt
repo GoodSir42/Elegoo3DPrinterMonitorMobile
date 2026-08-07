@@ -8,6 +8,7 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -94,6 +95,7 @@ class MainActivity : ComponentActivity() {
                                 is Destination.PrinterList -> NavEntry(key) {
                                     Scaffold(
                                         modifier = Modifier.fillMaxSize(),
+                                        contentWindowInsets = WindowInsets(),
                                         topBar = {
                                             TopAppBar(
                                                 title = { Text(stringResource(R.string.app_name)) },
@@ -114,7 +116,7 @@ class MainActivity : ComponentActivity() {
                                             onPrinterSelected = { printerId ->
                                                 backStack.add(Destination.PrinterDetail(printerId))
                                             },
-                                            modifier = Modifier.padding(innerPadding),
+                                            contentPadding = innerPadding,
                                         )
                                     }
                                 }
@@ -129,7 +131,10 @@ class MainActivity : ComponentActivity() {
                                     val printer by viewModel.printer.collectAsStateWithLifecycle()
                                     val videoStreamUrl by viewModel.videoStreamUrl.collectAsStateWithLifecycle()
 
-                                    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+                                    Scaffold(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentWindowInsets = WindowInsets(),
+                                        topBar = {
                                         TopAppBar(
                                             title = {
                                                 printer?.let {
@@ -156,7 +161,7 @@ class MainActivity : ComponentActivity() {
                                             PrinterDetailScreen(
                                                 printer = it,
                                                 videoStreamUrl = videoStreamUrl,
-                                                modifier = Modifier.padding(innerPadding),
+                                                contentPadding = innerPadding
                                             )
                                         }
                                     }

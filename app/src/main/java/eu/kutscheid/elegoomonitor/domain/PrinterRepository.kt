@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -112,7 +113,7 @@ class DataRepository(
     suspend fun snapshotFullPrinters(window: Duration): List<FullPrinterEntity> {
         var latest = emptyList<FullPrinterEntity>()
         withTimeoutOrNull(window) {
-            printers.collect { latest = it }
+            latest = printers.firstOrNull() ?: emptyList()
         }
         return latest
     }

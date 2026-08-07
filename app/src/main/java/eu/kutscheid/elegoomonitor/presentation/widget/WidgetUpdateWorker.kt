@@ -10,6 +10,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import co.touchlab.kermit.Logger
@@ -152,6 +153,16 @@ object PrinterWidgetScheduler {
             )
             .build()
 
+    private fun requestImmediate() =
+        OneTimeWorkRequestBuilder<WidgetUpdateWorker>()
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
+            )
+            .build()
+
     /** Schedules the next refresh ~5 minutes out (used both to bootstrap and to chain from the worker). */
     fun schedule(context: Context) {
         WorkManager.getInstance(context)
@@ -165,7 +176,7 @@ object PrinterWidgetScheduler {
     /** Runs a refresh as soon as constraints allow, then continues the 5-minute chain. */
     fun scheduleNow(context: Context) {
         WorkManager.getInstance(context)
-            .enqueueUniqueWork(UNIQUE_WORK, ExistingWorkPolicy.REPLACE, request(0))
+            .enqueueUniqueWork(UNIQUE_WORK, ExistingWorkPolicy.REPLACE, requestImmediate())
     }
 
     fun cancel(context: Context) {
