@@ -93,8 +93,8 @@ private fun PrinterCard(
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
+                        .sharedBounds(printerNameKey(printer.id))
                         .weight(1f)
-                        .sharedBounds(printerNameKey(printer.id)),
                 )
                 StatusPill(
                     printer.status,

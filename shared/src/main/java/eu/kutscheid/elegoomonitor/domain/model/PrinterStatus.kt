@@ -37,6 +37,7 @@ enum class PrinterStatus {
 
         fun fromLiveStatusCode(code: Int?): PrinterStatus = when (code) {
             0 -> Ready
+            9 -> Complete
             13 -> Printing
             else -> Unknown
         }
