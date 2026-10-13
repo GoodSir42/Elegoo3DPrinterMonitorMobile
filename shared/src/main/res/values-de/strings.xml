@@ -1,6 +1,7 @@
 <resources>
     <string name="printer_status_ready">Bereit</string>
     <string name="printer_status_printing">Druckt</string>
+    <string name="printer_status_preparing">Vorbereiten</string>
     <string name="printer_status_retracting">Zurückziehen</string>
     <string name="printer_status_exposing">Belichten</string>
     <string name="printer_status_lifting">Anheben</string>

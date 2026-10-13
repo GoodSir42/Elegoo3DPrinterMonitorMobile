@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 enum class PrinterStatus {
     Ready,
+    Preparing,
     Printing,
     Retracting,
     Exposing,
@@ -39,6 +40,7 @@ enum class PrinterStatus {
             0 -> Ready
             9 -> Complete
             13 -> Printing
+            20 -> Preparing
             else -> Unknown
         }
 
@@ -51,6 +53,7 @@ enum class PrinterStatus {
  */
 val PrinterStatus.isActivePrint: Boolean
     get() = when (this) {
+        PrinterStatus.Preparing,
         PrinterStatus.Printing,
         PrinterStatus.Retracting,
         PrinterStatus.Exposing,
@@ -72,6 +75,7 @@ val PrinterStatus.isActivePrint: Boolean
  */
 fun PrinterStatus.labelResId(): Int = when (this) {
     PrinterStatus.Ready -> R.string.printer_status_ready
+    PrinterStatus.Preparing -> R.string.printer_status_preparing
     PrinterStatus.Printing -> R.string.printer_status_printing
     PrinterStatus.Retracting -> R.string.printer_status_retracting
     PrinterStatus.Exposing -> R.string.printer_status_exposing

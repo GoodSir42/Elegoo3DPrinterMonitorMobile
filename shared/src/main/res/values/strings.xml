@@ -1,6 +1,7 @@
 <resources>
     <!-- Printer status labels, shared by the phone UI, the phone widget and the watch. -->
     <string name="printer_status_ready">Ready</string>
+    <string name="printer_status_preparing">Preparing</string>
     <string name="printer_status_printing">Printing</string>
     <string name="printer_status_retracting">Retracting</string>
     <string name="printer_status_exposing">Exposing</string>
