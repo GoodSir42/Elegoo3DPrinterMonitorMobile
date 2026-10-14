@@ -11,7 +11,11 @@ plugins {
 
 android {
     namespace = "eu.kutscheid.elegoomonitor.wear"
-    compileSdk = 37
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 1
+        }
+    }
 
     defaultConfig {
         // Must match the phone app: the Wearable Data Layer only exchanges data between apps that

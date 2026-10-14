@@ -7,8 +7,11 @@ plugins {
 
 android {
     namespace = "eu.kutscheid.elegoomonitor.shared"
-    compileSdk = 37
-
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 1
+        }
+    }
     defaultConfig {
         // Wear OS 3 is API 30, matching the phone app's floor.
         minSdk = 30

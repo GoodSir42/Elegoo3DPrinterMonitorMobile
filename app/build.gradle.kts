@@ -13,7 +13,11 @@ plugins {
 
 android {
     namespace = "eu.kutscheid.elegoomonitor"
-    compileSdk = 37
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 1
+        }
+    }
 
     defaultConfig {
         applicationId = "eu.kutscheid.elegoomonitor"
