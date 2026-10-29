@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+# R8 (AGP 9.5) miscompiles Ktor's UDP socket classes: DatagramSendChannel fails ART verification
+# ("cannot access instance field ... Datagram.address"), so binding the discovery socket throws a
+# VerifyError and no printer is ever found in release builds. Keep them out of optimization.
+-keep class io.ktor.network.sockets.** { *; }
