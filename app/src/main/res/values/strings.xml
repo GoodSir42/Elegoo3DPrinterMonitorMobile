@@ -5,6 +5,8 @@
     <string name="printer_firmware_version">Firmware Version: %1$s</string>
     <string name="content_description_printer_image">Image of a %1$s 3d printer</string>
     <string name="main_scanning_and_waiting">Scanning network and waiting for data</string>
+    <string name="local_network_permission_rationale">Elegoo Monitor needs access to your local network to find your printers and read their status.</string>
+    <string name="local_network_permission_grant">Allow access</string>
     <string name="back">Back</string>
     <string name="licenses">Open Source Licenses</string>
     <string name="estimated_leftover_time">Estimated Leftover Time: %1$s</string>

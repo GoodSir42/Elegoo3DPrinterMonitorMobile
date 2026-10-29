@@ -9,9 +9,15 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -49,6 +55,8 @@ class MainActivity : ComponentActivity() {
             ElegooMonitorTheme {
                 // Create a back stack, specifying the key the app should start with
                 val backStack = rememberNavBackStack(Destination.InitialLoading)
+                // Discovery keeps retrying while this is missing and picks up once it is granted.
+                val localNetworkPermission = rememberLocalNetworkPermissionState()
                 val printerViewModel = koinViewModel<PrinterInfoViewModel>()
                 val printerList by printerViewModel.printerInfo.collectAsStateWithLifecycle()
 
@@ -75,19 +83,36 @@ class MainActivity : ComponentActivity() {
                                                 .fillMaxSize()
                                                 .padding(16.dp)
                                         ) {
-                                            Text(
-                                                stringResource(R.string.main_scanning_and_waiting),
-                                                style = MaterialTheme.typography.headlineLarge,
-                                                textAlign = TextAlign.Center,
-                                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                                            )
-                                            LoadingIndicator(
-                                                modifier = Modifier
-                                                    .size(120.dp)
-                                                    .align(
-                                                        Alignment.CenterHorizontally
-                                                    )
-                                            )
+                                            if (localNetworkPermission.isGranted) {
+                                                Text(
+                                                    stringResource(R.string.main_scanning_and_waiting),
+                                                    style = MaterialTheme.typography.headlineLarge,
+                                                    textAlign = TextAlign.Center,
+                                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                                )
+                                                LoadingIndicator(
+                                                    modifier = Modifier
+                                                        .size(120.dp)
+                                                        .align(
+                                                            Alignment.CenterHorizontally
+                                                        )
+                                                )
+                                            } else {
+                                                Text(
+                                                    stringResource(R.string.local_network_permission_rationale),
+                                                    style = MaterialTheme.typography.headlineSmall,
+                                                    textAlign = TextAlign.Center,
+                                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                                )
+                                                Button(
+                                                    onClick = localNetworkPermission::request,
+                                                    modifier = Modifier
+                                                        .padding(top = 24.dp)
+                                                        .align(Alignment.CenterHorizontally)
+                                                ) {
+                                                    Text(stringResource(R.string.local_network_permission_grant))
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -161,7 +186,9 @@ class MainActivity : ComponentActivity() {
                                             PrinterDetailScreen(
                                                 printer = it,
                                                 videoStreamUrl = videoStreamUrl,
-                                                contentPadding = innerPadding
+                                                contentPadding = innerPadding + WindowInsets.systemBars.only(
+                                                    WindowInsetsSides.Bottom
+                                                ).asPaddingValues()
                                             )
                                         }
                                     }

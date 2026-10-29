@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularWavyProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -62,7 +61,6 @@ private val timeFormatter = DateTimeComponents.Format {
 /** Keeps content readable instead of stretching edge-to-edge on tablets and unfolded foldables. */
 private val MaxContentWidth = 900.dp
 
-@OptIn(ExperimentalTime::class)
 @Composable
 fun PrinterDetailScreen(
     modifier: Modifier = Modifier,
@@ -153,7 +151,6 @@ private fun HeaderCard(printer: FullPrinterEntity, modifier: Modifier = Modifier
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun ProgressCard(printer: FullPrinterEntity, modifier: Modifier = Modifier) {
     Card(
@@ -174,24 +171,26 @@ private fun ProgressCard(printer: FullPrinterEntity, modifier: Modifier = Modifi
                 targetValue = printer.progress.toFloat(),
                 label = "printProgress",
             )
-            Box(contentAlignment = Alignment.Center) {
-                CircularWavyProgressIndicator(
-                    progress = { progress },
-                    modifier = Modifier.size(144.dp),
-                )
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = stringResource(
-                            R.string.printer_progress_percent_short,
-                            progress * 100
-                        ),
-                        style = MaterialTheme.typography.displaySmall,
-                        fontWeight = FontWeight.Bold,
+            if (!progress.isNaN()) {
+                Box(contentAlignment = Alignment.Center) {
+                    CircularWavyProgressIndicator(
+                        progress = { progress },
+                        modifier = Modifier.size(144.dp),
                     )
-                    Text(
-                        text = stringResource(R.string.detail_label_complete),
-                        style = MaterialTheme.typography.labelMedium,
-                    )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = stringResource(
+                                R.string.printer_progress_percent_short,
+                                progress * 100
+                            ),
+                            style = MaterialTheme.typography.displaySmall,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(
+                            text = stringResource(R.string.detail_label_complete),
+                            style = MaterialTheme.typography.labelMedium,
+                        )
+                    }
                 }
             }
             Text(

@@ -22,7 +22,7 @@ android {
     defaultConfig {
         applicationId = "eu.kutscheid.elegoomonitor"
         minSdk = 30
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 10
         versionName = "1.0"
 
@@ -88,7 +88,7 @@ dependencies {
 
     implementation(project(":shared"))
     implementation(libs.play.services.wearable)
-    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     val composeBom = platform(libs.androidx.compose.bom)

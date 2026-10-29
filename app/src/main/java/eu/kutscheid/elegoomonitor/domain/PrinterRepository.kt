@@ -75,7 +75,8 @@ class DataRepository(
             if (targets.isEmpty()) {
                 flowOf(emptyMap())
             } else {
-                merge(*targets.values.distinct().map(::liveStatusOf).toTypedArray())
+                merge(*targets.map { (mainboardId, ip) -> liveStatusOf(ip, mainboardId) }
+                    .toTypedArray())
                     .runningFold(emptyMap<String, StatusMessage>()) { statuses, message ->
                         statuses + (message.mainboardID to message)
                     }
@@ -102,7 +103,8 @@ class DataRepository(
      * One-shot fetch for background callers (e.g. the home-screen widget) that must not hold a
      * persistent connection. Subscribes to the discovery pipeline for [window] — long enough for the
      * broadcast reply and, for websocket-reporting printers, the first status frame to arrive — then
-     * unsubscribes so the socket closes. Returns the most recent snapshot seen in that window.
+     * unsubscribes so the socket closes. Returns early once a printer reports an active print,
+     * otherwise the most recent snapshot seen in that window.
      */
     suspend fun snapshotPrinters(window: Duration): List<PrinterEntity> =
         snapshotFullPrinters(window).map { PrinterEntity(it) }
@@ -114,7 +116,10 @@ class DataRepository(
     suspend fun snapshotFullPrinters(window: Duration): List<FullPrinterEntity> {
         var latest = emptyList<FullPrinterEntity>()
         withTimeoutOrNull(window) {
-            latest = printers.first { it.any { it.status.isActivePrint } }
+            printers.first { snapshot ->
+                latest = snapshot
+                snapshot.any { it.status.isActivePrint }
+            }
         }
         return latest
     }
@@ -133,10 +138,10 @@ class DataRepository(
     }
 
     /** Keeps a printer's websocket open, reconnecting with a delay after a normal close or an error. */
-    private fun liveStatusOf(ip: String): Flow<StatusMessage> = flow {
+    private fun liveStatusOf(ip: String, mainboardId: String): Flow<StatusMessage> = flow {
         while (currentCoroutineContext().isActive) {
             try {
-                emitAll(wsDataSource.connect(ip))
+                emitAll(wsDataSource.connect(ip, mainboardId))
             } catch (ex: CancellationException) {
                 throw ex
             } catch (ex: Throwable) {
